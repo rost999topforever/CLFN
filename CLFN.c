@@ -22,15 +22,16 @@ int main(void)
 	fgets(prog,sizeof(prog),stdin);
 	prog[strcspn(prog,"\n")]=0;
 	if(strcmp(prog,"")==0){
-		printf("ARE YOU IDIOT >:(  ,write name of program please!!\n");
+		printf("ARE YOU IDIOT >:(  ,write name of program hwo must be read the file  please!!\n");
 		goto rest;
 	}
 	printf("you need gide?\n1)yes\n2)no\n");
 	scanf("%d",&gide);
 	fgets(sav,sizeof(sav),stdin);
 	if(gide==1){
-		printf("@-hello I you friend, lets start .\n now you need write code , when you need to end you need wtite CLFN.PROGRAM.END and write arguments for program. \n I hope you be cool guy and you understand how to use that program\n");
+		printf("@-hello I you friend, lets start .\n now you need write code , when you need to end you need wtite CLFN.PROGRAM.END and write arguments for program. \n I hope you be cool guy and you understand how to use that program\nIf you want to create new file please write CLFN.PROGRAM.RESET\n");
 	}
+	move:
 	sprintf(name,"CLFN%d.clfn",(int)(time(NULL)/365));
 	FILE *f=fopen(name,"w+");
 	while(1){
@@ -38,6 +39,10 @@ int main(void)
 		fgets(code,sizeof(code),stdin);
 		if(strcmp(code,"CLFN.PROGRAM.END\n")==0){
 			break;
+		}else if(strcmp(code,"CLFN.PROGRAM.RESET\n")==0){
+			fclose(f);
+			remove(name);
+			goto move;
 		}else{
 		fprintf(f,"%s",code);
 		}
@@ -48,7 +53,7 @@ int main(void)
 	if(choice==2){
 		exit(0);
 	}else{
-		printf("custom run or normal run?\n 1)custom run\n2)normal run\n");
+		printf("custom run or normal run?\n1)custom run\n2)normal run\n");
 		scanf("%d",&choice2);
 		fgets(sav,sizeof(sav),stdin);
 		pid_t t=fork();
@@ -56,6 +61,9 @@ int main(void)
 			if(t==0){
 				execlp(prog,prog,name,NULL);
 				perror("");
+				remove(name);
+			}else{
+				wait(NULL);
 				remove(name);
 			}
 		}else if(choice2==1){
@@ -79,11 +87,12 @@ int main(void)
 			args[counter+1]=NULL;
 			execvp(prog,args);
 			perror("");
-			
+			remove(name);
 			
 			
 			}else{
-				printf("Ok,I understand you I go out");
+				printf("Ok,I understand you I go out\n");
+				remove(name);
 				exit(0);
 			}
 			}else{
